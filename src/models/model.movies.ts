@@ -28,9 +28,9 @@ const MovieModel = {
         const sql = `SELECT
                     movie_public_id, title, poster_url, status, released_at
                     FROM movies 
-                    LIMIT ? OFFSET ?`;
+                    LIMIT ${limit} OFFSET ${offset}`;
                     
-        const [rows] = await pool.execute(sql,[limit,offset]);
+        const [rows] = await pool.execute(sql);
         return rows
     },
 
@@ -41,9 +41,9 @@ const MovieModel = {
                     FROM movies
                     WHERE status = 1
                     ORDER BY released_at DESC
-                    LIMIT 5 OFFSET ?`;
+                    LIMIT 5 OFFSET ${offset}`;
 
-        const [rows] = await pool.execute(sql,[offset]);
+        const [rows] = await pool.execute(sql,);
         return rows;
     },
 
