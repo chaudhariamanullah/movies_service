@@ -1,0 +1,88 @@
+CREATE DATABASE movie_service;
+
+CREATE TABLE movies(
+    movie_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_public_id char(36) NOT NULL UNIQUE,
+    title VARCHAR(50) NOT NULL,
+    poster_url VARCHAR(200) NOT NULL,
+    movie_description TEXT,
+    movie_duration INT ,
+    age_rating VARCHAR(10),
+    release_date DATE NOT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE artists(
+    artist_id INT AUTO_INCREMENT PRIMARY KEY,
+    artist_public_id char(36) NOT NULL UNIQUE,
+    actor_name VARCHAR(60) NOT NULL,
+    artist_photo VARCHAR(200),
+    actor_dob DATE NOT NULL,
+    actor_country VARCHAR(20) NOT NULL,
+    actor_city VARCHAR(25) NOT NULL
+);
+
+
+CREATE TABLE movie_cast(
+    cast_id INT AUTO_INCREMENT PRIMARY KEY,
+    cast_public_id char(36) NOT NULL UNIQUE,
+    movie_id INT NOT NULL,
+    artist_id INT NOT NULL,
+    character_name VARCHAR(40),
+    job ENUM('actor','director','producer','writer','crew') NOT NULL,
+    FOREIGN KEY(movie_id) REFERENCES movies(movie_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    FOREIGN KEY(artist_id) REFERENCES artists(artist_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE languages(
+    language_id INT AUTO_INCREMENT PRIMARY KEY,
+    language VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE movie_language(
+    movie_id INT NOT NULL,
+    language_id INT NOT NULL,
+    PRIMARY KEY (movie_id, language_id),
+    FOREIGN KEY(movie_id) REFERENCES movies(movie_id)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    FOREIGN KEY(language_id) REFERENCES languages(language_id)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE genres(
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    genre_name VARCHAR(30) NOT NULL UNIQUE
+);
+
+CREATE TABLE movie_genres(
+    movie_id INT NOT NULL,
+    genre_id INT NOT NULL,
+    PRIMARY KEY(movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES genres(genre_id) ON DELETE CASCADE
+);
+
+CREATE TABLE user_review (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    review_public_id CHAR(36) NOT NULL,
+    movie_public_id VARCHAR(40) NOT NULL,
+    user_public_id VARCHAR(40) NOT NULL,
+    username VARCHAR(40),
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE (user_public_id, movie_public_id),
+    INDEX idx_movie_reviews (movie_public_id)
+);
+
