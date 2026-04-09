@@ -18,8 +18,8 @@ const actorModel = {
     async fetchAll(limit:number,offset:number){
         const sql = `SELECT 
                     artist_public_id, artist_name FROM artists
-                    LIMIT ? OFFSET ?`;
-        const [rows] = await pool.execute<RowDataPacket[]>(sql,[limit,offset]);
+                    LIMIT ${limit} OFFSET ${offset}`;
+        const [rows] = await pool.execute<RowDataPacket[]>(sql);
         return rows ?? null;
     },
 
